@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FSMForge – Automated Counter Design Platform</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-box {
+            max-width: 900px;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #4fd1c5;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            margin-bottom: 35px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #4fd1c5, #38b2ac);
+            color: #000;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 12px 35px rgba(79, 209, 197, 0.4);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 50px rgba(79, 209, 197, 0.6);
+        }
+
+        /* ---------- SECTIONS ---------- */
+        .section {
+            padding: 90px 20px;
+            max-width: 1200px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2.4rem;
+            margin-bottom: 15px;
+        }
+
+        .section p.subtitle {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            max-width: 900px;
+            margin: 0 auto 50px;
+        }
+
+        /* ---------- CARDS ---------- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(14px);
+            padding: 35px 25px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        /* ---------- TEAM ---------- */
+        .profile img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.6);
+            margin-bottom: 15px;
+        }
+
+        .profile h3 {
+            margin-bottom: 6px;
+        }
+
+        .profile p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* ---------- FOOTER ---------- */
+        footer {
+            padding: 25px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <div class="hero-box">
+        <h1>FSMForge <span>– Automated Counter Design Platform</span></h1>
+        <p>
+            FSMForge is an academic-grade automation platform that converts
+            state sequences into fully verified counter designs using
+            formal finite state machine modeling, Boolean minimization,
+            and HDL generation.
+        </p>
+
+        <a href="/tool" class="cta-btn">Try FSMForge</a>
+    </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section">
+    <h2>Why FSMForge?</h2>
+    <p class="subtitle">
+        Designing counters manually is time-consuming and error-prone.
+        FSMForge bridges theory and implementation by automating
+        excitation equation derivation, logic synthesis, and Verilog
+        generation in a single workflow.
+    </p>
+
+    <div class="grid">
+        <div class="card">
+            <h3>FSM-Based Modeling</h3>
+            <p>
+                Converts user-defined state sequences into
+                deterministic finite state machines.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Logic Minimization</h3>
+            <p>
+                Applies Boolean algebra techniques to derive
+                optimized excitation equations.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>HDL Automation</h3>
+            <p>
+                Automatically generates synthesizable Verilog
+                and simulation-ready testbenches.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FACULTY ================= -->
+<section class="section">
+    <h2>Academic Supervision</h2>
+    <p class="subtitle">
+        The project was developed under expert academic guidance
+        to ensure correctness, rigor, and alignment with core
+        digital design principles.
+    </p>
+
+    <div class="grid" style="max-width:400px; margin:auto;">
+        <div class="card profile">
+            <img src="/static/images/mentor.jpg">
+            <h3>Dr. Pallabi Sarkar</h3>
+            <p>
+                Faculty Mentor<br>
+                School of Electrical & Electronics Engineering<br>
+                <strong>VIT Bhopal University</strong>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= TEAM ================= -->
+<section class="section">
+    <h2>Developed By</h2>
+    <p class="subtitle">
+        FSMForge was designed and implemented as a
+        final-year capstone project by undergraduate students.
+    </p>
+
+    <div class="grid">
+        <div class="card profile">
+            <img src="/static/images/tejashvi.jpg">
+            <h3>Tejashvi Raj</h3>
+            <p>
+                Student<br>
+                School of Electrical & Electronics Engineering<br>
+                <strong>VIT Bhopal University</strong>
+            </p>
+        </div>
+
+        <div class="card profile">
+            <img src="/static/images/ayush.jpg">
+            <h3>Ayush Billore</h3>
+            <p>
+                Student<br>
+                School of Electrical & Electronics Engineering<br>
+                <strong>VIT Bhopal University</strong>
+            </p>
+        </div>
+
+        <div class="card profile">
+            <img src="/static/images/karan.jpg">
+            <h3>Karan Gandha</h3>
+            <p>
+                Student<br>
+                School of Electrical & Electronics Engineering<br>
+                <strong>VIT Bhopal University</strong>
+            </p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    © 2025 FSMForge | VIT Bhopal University
+</footer>
+
+</body>
+</html>

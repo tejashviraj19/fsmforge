@@ -1,0 +1,2 @@
+K0 = 0
+Error drawing: 1
