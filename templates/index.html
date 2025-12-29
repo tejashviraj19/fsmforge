@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Counter Design Automation Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0b1220;
+            color: #e5e7eb;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* ---------- Layout ---------- */
+        section {
+            padding: 90px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #cbd5f5;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            text-align: center;
+            padding-top: 120px;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .cta {
+            margin-top: 40px;
+            padding: 14px 36px;
+            background: #6366f1;
+            color: #fff;
+            border-radius: 30px;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .cta:hover {
+            transform: translateY(-3px);
+        }
+
+        /* ---------- Cards ---------- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: #111827;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #1f2937;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        /* ---------- Steps ---------- */
+        .steps li {
+            margin-bottom: 14px;
+        }
+
+        /* ---------- Team ---------- */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
+        }
+
+        .profile {
+            background: #111827;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #1f2937;
+        }
+
+        .profile img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .social a {
+            margin: 0 6px;
+            font-size: 1.2rem;
+            color: #cbd5f5;
+        }
+
+        .social a:hover {
+            color: #6366f1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Counter Design Automation Tool</h1>
+    <p>
+        An academic automation framework that transforms user-defined state sequences
+        into optimized finite state machine and synchronous counter implementations.
+        The system bridges theoretical digital design concepts with practical,
+        synthesizable hardware realizations.
+    </p>
+
+    <a href="/tool" class="cta">Try the Tool</a>
+</section>
+
+<!-- PROBLEM -->
+<section>
+    <h2>Problem Statement</h2>
+    <p>
+        Conventional FSM and counter design involves manual derivation of state tables,
+        excitation equations, Karnaugh map minimization, and HDL coding. This fragmented
+        workflow is time-consuming, difficult to verify, and prone to human error,
+        especially as system complexity increases.
+    </p>
+</section>
+
+<!-- SOLUTION -->
+<section>
+    <h2>Proposed Solution</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>Automated FSM Synthesis</h3>
+            <p>Direct conversion of state sequences into excitation equations.</p>
+        </div>
+        <div class="card">
+            <h3>Exact Boolean Minimization</h3>
+            <p>Symbolic logic techniques eliminate dependence on manual K-maps.</p>
+        </div>
+        <div class="card">
+            <h3>Hardware-Ready Output</h3>
+            <p>Generates synthesizable Verilog and simulation-ready testbenches.</p>
+        </div>
+    </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section>
+    <h2>Design Methodology</h2>
+    <ul class="steps">
+        <li>State encoding and transition mapping</li>
+        <li>Flip-flop excitation derivation (D, T, JK, SR)</li>
+        <li>Symbolic Boolean minimization</li>
+        <li>Gate-level logic visualization</li>
+        <li>HDL generation and functional verification</li>
+    </ul>
+</section>
+
+<!-- CONTRIBUTIONS -->
+<section>
+    <h2>Key Contributions</h2>
+    <div class="grid">
+        <div class="card">End-to-end automation of counter design</div>
+        <div class="card">Support for multiple flip-flop models</div>
+        <div class="card">Exact minimization with don’t-care handling</div>
+        <div class="card">Educational and industry-aligned architecture</div>
+    </div>
+</section>
+
+<!-- FACULTY -->
+<section>
+    <h2>Faculty Mentor</h2>
+    <div class="team-grid">
+        <div class="profile">
+            <img src="{{ url_for('static', filename='images/mentor.jpg') }}">
+            <h3>Ms. Pallabi Sarkar</h3>
+            <p>Assistant Professor<br>School of EEE<br>VIT Bhopal University</p>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section>
+    <h2>Developed By</h2>
+    <div class="team-grid">
+
+        <div class="profile">
+            <img src="{{ url_for('static', filename='images/karan.jpg') }}">
+            <h3>Karan Gandha</h3>
+            <p>Lead Developer & System Architect</p>
+            <div class="social">
+                <a href="https://www.linkedin.com/in/karangandha504/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/karanxlab" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://share.google/FRJmi8XJixjY7luNH" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="profile">
+            <img src="{{ url_for('static', filename='images/ayush.jpg') }}">
+            <h3>Ayush Billore</h3>
+            <p>Literature Analysis & Debugging Support</p>
+            <div class="social">
+                <a href="https://www.linkedin.com/in/ayush-billore-aaab49251/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/ayushBillore" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.instagram.com/ayush_billore_05" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.geeksforgeeks.org/profile/ayushbillqvvr" target="_blank"><i class="fas fa-code"></i></a>
+            </div>
+        </div>
+
+        <div class="profile">
+            <img src="{{ url_for('static', filename='images/tejashvi.jpg') }}">
+            <h3>Tejashvi Raj</h3>
+            <p>Web Interface, Deployment & Documentation</p>
+            <div class="social">
+                <a href="https://www.linkedin.com/in/tejashviraj19/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/tejashviraj19" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.instagram.com/tejashvi.raj_" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.geeksforgeeks.org/profile/tejashviraj19" target="_blank"><i class="fas fa-code"></i></a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    © 2025 Counter Design Automation Tool
+</footer>
+
+</body>
+</html>
