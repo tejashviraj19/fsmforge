@@ -15,13 +15,12 @@
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: #0b1220;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             color: #e5e7eb;
         }
 
         a { text-decoration: none; color: inherit; }
 
-        /* ---------- Layout ---------- */
         section {
             padding: 90px 20px;
             max-width: 1200px;
@@ -40,7 +39,7 @@
         p {
             font-size: 1.05rem;
             line-height: 1.8;
-            color: #cbd5f5;
+            color: #d1e7f0;
         }
 
         /* ---------- Hero ---------- */
@@ -62,16 +61,17 @@
         .cta {
             margin-top: 40px;
             padding: 14px 36px;
-            background: #6366f1;
-            color: #fff;
+            background: #00c6ff;
+            color: #000;
             border-radius: 30px;
             font-weight: 600;
             display: inline-block;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
 
         .cta:hover {
             transform: translateY(-3px);
+            background: #00a8e0;
         }
 
         /* ---------- Cards ---------- */
@@ -83,10 +83,11 @@
         }
 
         .card {
-            background: #111827;
+            background: rgba(255,255,255,0.08);
             border-radius: 16px;
             padding: 28px;
-            border: 1px solid #1f2937;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
         .card h3 {
@@ -107,11 +108,12 @@
         }
 
         .profile {
-            background: #111827;
+            background: rgba(255,255,255,0.08);
             border-radius: 16px;
             padding: 30px;
             text-align: center;
-            border: 1px solid #1f2937;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
         .profile img {
@@ -120,22 +122,23 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 15px;
+            border: 3px solid rgba(255,255,255,0.5);
         }
 
         .social a {
             margin: 0 6px;
             font-size: 1.2rem;
-            color: #cbd5f5;
+            color: #cfefff;
         }
 
         .social a:hover {
-            color: #6366f1;
+            color: #00c6ff;
         }
 
         footer {
             text-align: center;
             padding: 40px;
-            color: #9ca3af;
+            color: #cbd5e1;
             font-size: 0.9rem;
         }
     </style>
@@ -143,7 +146,6 @@
 
 <body>
 
-<!-- HERO -->
 <section class="hero">
     <h1>Counter Design Automation Tool</h1>
     <p>
@@ -156,7 +158,6 @@
     <a href="/tool" class="cta">Try the Tool</a>
 </section>
 
-<!-- PROBLEM -->
 <section>
     <h2>Problem Statement</h2>
     <p>
@@ -167,7 +168,6 @@
     </p>
 </section>
 
-<!-- SOLUTION -->
 <section>
     <h2>Proposed Solution</h2>
     <div class="grid">
@@ -186,7 +186,6 @@
     </div>
 </section>
 
-<!-- METHODOLOGY -->
 <section>
     <h2>Design Methodology</h2>
     <ul class="steps">
@@ -198,7 +197,6 @@
     </ul>
 </section>
 
-<!-- CONTRIBUTIONS -->
 <section>
     <h2>Key Contributions</h2>
     <div class="grid">
@@ -209,7 +207,6 @@
     </div>
 </section>
 
-<!-- FACULTY -->
 <section>
     <h2>Faculty Mentor</h2>
     <div class="team-grid">
@@ -221,7 +218,6 @@
     </div>
 </section>
 
-<!-- TEAM -->
 <section>
     <h2>Developed By</h2>
     <div class="team-grid">
