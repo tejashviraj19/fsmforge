@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FSMForge – Counter Design Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.8rem;
+        }
+
+        p.subtitle {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            background: #00c6ff;
+            color: #000;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00a8e0;
+            transform: scale(1.03);
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .equation-box {
+            background: rgba(0,0,0,0.25);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-family: Consolas, monospace;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .diagram-grid img {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .download-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .download-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>FSMForge – Counter Design Tool</h1>
+    <p class="subtitle">
+        Enter a state sequence and flip-flop type to automatically generate excitation equations,
+        gate-level logic, and synthesizable Verilog.
+    </p>
+
+    <!-- INPUT CARD -->
+    <div class="card">
+        <input id="sequence" placeholder="Enter state sequence (e.g. 0 1 3 2)">
+        <select id="ffType">
+            <option value="D">D Flip-Flop</option>
+            <option value="T">T Flip-Flop</option>
+            <option value="JK">JK Flip-Flop</option>
+            <option value="SR">SR Flip-Flop</option>
+        </select>
+
+        <button onclick="generate()">Generate</button>
+        <div class="status" id="status">Waiting for input…</div>
+    </div>
+
+    <!-- EQUATIONS -->
+    <div class="card">
+        <h2>Excitation Equations</h2>
+        <div id="equations"></div>
+    </div>
+
+    <!-- DIAGRAMS -->
+    <div class="card">
+        <h2>Gate-Level Implementations</h2>
+        <div class="diagram-grid" id="diagrams"></div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="card">
+        <h2>Downloads</h2>
+
+        <div class="download-row">
+            <button id="verilogBtn" disabled onclick="downloadFile('verilog')">
+                Download Verilog
+            </button>
+
+            <button id="tbBtn" disabled onclick="downloadFile('testbench')">
+                Download Testbench
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let generatedFiles = {};
+
+function generate() {
+    const seq = document.getElementById("sequence").value.trim();
+    const ff = document.getElementById("ffType").value;
+
+    if (!seq) {
+        alert("Please enter a state sequence.");
+        return;
+    }
+
+    document.getElementById("status").innerText = "Generating logic…";
+    document.getElementById("verilogBtn").disabled = true;
+    document.getElementById("tbBtn").disabled = true;
+
+    fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sequence: seq, ff_type: ff })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Equations
+        const eqDiv = document.getElementById("equations");
+        eqDiv.innerHTML = "";
+        Object.entries(data.equations).forEach(([k, v]) => {
+            const d = document.createElement("div");
+            d.className = "equation-box";
+            d.innerText = `${k} = ${v}`;
+            eqDiv.appendChild(d);
+        });
+
+        // Diagrams
+        const dg = document.getElementById("diagrams");
+        dg.innerHTML = "";
+        data.images.forEach(src => {
+            const img = document.createElement("img");
+            img.src = src;
+            dg.appendChild(img);
+        });
+
+        generatedFiles = data;
+
+        document.getElementById("verilogBtn").disabled = false;
+        document.getElementById("tbBtn").disabled = false;
+        document.getElementById("status").innerText = "Files ready for download ✔";
+    })
+    .catch(err => {
+        document.getElementById("status").innerText = "Error during generation.";
+        console.error(err);
+    });
+}
+
+function downloadFile(type) {
+    const content = type === "verilog"
+        ? generatedFiles.verilog
+        : generatedFiles.testbench;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = type === "verilog" ? "fsm_auto.v" : "tb_fsm_auto.v";
+    a.click();
+}
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FSMForge – Counter Design Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.8rem;
+        }
+
+        p.subtitle {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            background: #00c6ff;
+            color: #000;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00a8e0;
+            transform: scale(1.03);
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .equation-box {
+            background: rgba(0,0,0,0.25);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-family: Consolas, monospace;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .diagram-grid img {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .download-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .download-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>FSMForge – Counter Design Tool</h1>
+    <p class="subtitle">
+        Enter a state sequence and flip-flop type to automatically generate excitation equations,
+        gate-level logic, and synthesizable Verilog.
+    </p>
+
+    <!-- INPUT CARD -->
+    <div class="card">
+        <input id="sequence" placeholder="Enter state sequence (e.g. 0 1 3 2)">
+        <select id="ffType">
+            <option value="D">D Flip-Flop</option>
+            <option value="T">T Flip-Flop</option>
+            <option value="JK">JK Flip-Flop</option>
+            <option value="SR">SR Flip-Flop</option>
+        </select>
+
+        <button onclick="generate()">Generate</button>
+        <div class="status" id="status">Waiting for input…</div>
+    </div>
+
+    <!-- EQUATIONS -->
+    <div class="card">
+        <h2>Excitation Equations</h2>
+        <div id="equations"></div>
+    </div>
+
+    <!-- DIAGRAMS -->
+    <div class="card">
+        <h2>Gate-Level Implementations</h2>
+        <div class="diagram-grid" id="diagrams"></div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="card">
+        <h2>Downloads</h2>
+
+        <div class="download-row">
+            <button id="verilogBtn" disabled onclick="downloadFile('verilog')">
+                Download Verilog
+            </button>
+
+            <button id="tbBtn" disabled onclick="downloadFile('testbench')">
+                Download Testbench
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let generatedFiles = {};
+
+function generate() {
+    const seq = document.getElementById("sequence").value.trim();
+    const ff = document.getElementById("ffType").value;
+
+    if (!seq) {
+        alert("Please enter a state sequence.");
+        return;
+    }
+
+    document.getElementById("status").innerText = "Generating logic…";
+    document.getElementById("verilogBtn").disabled = true;
+    document.getElementById("tbBtn").disabled = true;
+
+    fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sequence: seq, ff_type: ff })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Equations
+        const eqDiv = document.getElementById("equations");
+        eqDiv.innerHTML = "";
+        Object.entries(data.equations).forEach(([k, v]) => {
+            const d = document.createElement("div");
+            d.className = "equation-box";
+            d.innerText = `${k} = ${v}`;
+            eqDiv.appendChild(d);
+        });
+
+        // Diagrams
+        const dg = document.getElementById("diagrams");
+        dg.innerHTML = "";
+        data.images.forEach(src => {
+            const img = document.createElement("img");
+            img.src = src;
+            dg.appendChild(img);
+        });
+
+        generatedFiles = data;
+
+        document.getElementById("verilogBtn").disabled = false;
+        document.getElementById("tbBtn").disabled = false;
+        document.getElementById("status").innerText = "Files ready for download ✔";
+    })
+    .catch(err => {
+        document.getElementById("status").innerText = "Error during generation.";
+        console.error(err);
+    });
+}
+
+function downloadFile(type) {
+    const content = type === "verilog"
+        ? generatedFiles.verilog
+        : generatedFiles.testbench;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = type === "verilog" ? "fsm_auto.v" : "tb_fsm_auto.v";
+    a.click();
+}
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FSMForge – Counter Design Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.8rem;
+        }
+
+        p.subtitle {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            background: #00c6ff;
+            color: #000;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #00a8e0;
+            transform: scale(1.03);
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .equation-box {
+            background: rgba(0,0,0,0.25);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-family: Consolas, monospace;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .diagram-grid img {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .download-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .download-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>FSMForge – Counter Design Tool</h1>
+    <p class="subtitle">
+        Enter a state sequence and flip-flop type to automatically generate excitation equations,
+        gate-level logic, and synthesizable Verilog.
+    </p>
+
+    <!-- INPUT CARD -->
+    <div class="card">
+        <input id="sequence" placeholder="Enter state sequence (e.g. 0 1 3 2)">
+        <select id="ffType">
+            <option value="D">D Flip-Flop</option>
+            <option value="T">T Flip-Flop</option>
+            <option value="JK">JK Flip-Flop</option>
+            <option value="SR">SR Flip-Flop</option>
+        </select>
+
+        <button onclick="generate()">Generate</button>
+        <div class="status" id="status">Waiting for input…</div>
+    </div>
+
+    <!-- EQUATIONS -->
+    <div class="card">
+        <h2>Excitation Equations</h2>
+        <div id="equations"></div>
+    </div>
+
+    <!-- DIAGRAMS -->
+    <div class="card">
+        <h2>Gate-Level Implementations</h2>
+        <div class="diagram-grid" id="diagrams"></div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="card">
+        <h2>Downloads</h2>
+
+        <div class="download-row">
+            <button id="verilogBtn" disabled onclick="downloadFile('verilog')">
+                Download Verilog
+            </button>
+
+            <button id="tbBtn" disabled onclick="downloadFile('testbench')">
+                Download Testbench
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let generatedFiles = {};
+
+function generate() {
+    const seq = document.getElementById("sequence").value.trim();
+    const ff = document.getElementById("ffType").value;
+
+    if (!seq) {
+        alert("Please enter a state sequence.");
+        return;
+    }
+
+    document.getElementById("status").innerText = "Generating logic…";
+    document.getElementById("verilogBtn").disabled = true;
+    document.getElementById("tbBtn").disabled = true;
+
+    fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sequence: seq, ff_type: ff })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Equations
+        const eqDiv = document.getElementById("equations");
+        eqDiv.innerHTML = "";
+        Object.entries(data.equations).forEach(([k, v]) => {
+            const d = document.createElement("div");
+            d.className = "equation-box";
+            d.innerText = `${k} = ${v}`;
+            eqDiv.appendChild(d);
+        });
+
+        // Diagrams
+        const dg = document.getElementById("diagrams");
+        dg.innerHTML = "";
+        data.images.forEach(src => {
+            const img = document.createElement("img");
+            img.src = src;
+            dg.appendChild(img);
+        });
+
+        generatedFiles = data;
+
+        document.getElementById("verilogBtn").disabled = false;
+        document.getElementById("tbBtn").disabled = false;
+        document.getElementById("status").innerText = "Files ready for download ✔";
+    })
+    .catch(err => {
+        document.getElementById("status").innerText = "Error during generation.";
+        console.error(err);
+    });
+}
+
+function downloadFile(type) {
+    const content = type === "verilog"
+        ? generatedFiles.verilog
+        : generatedFiles.testbench;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = type === "verilog" ? "fsm_auto.v" : "tb_fsm_auto.v";
+    a.click();
+}
+</script>
+
+</body>
+</html>
